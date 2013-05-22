@@ -47,8 +47,9 @@ $(document).ready(function(){
     template: _.template($('#list-item-template').html()),
     events: {
       // $('.checkbox').on(click, toggleView);
-      "click .checkbox": function() {
+      'click .checkbox': function() {
         this.model.toggle();
+        this.remove();
       }
     },
     render: function() {
@@ -71,16 +72,21 @@ $(document).ready(function(){
     initialize: function() {
       this.input = this.$('#new-todo');
       this.counter = this.$('#counter');
-      this.listenTo(Todos, 'add', function(todo) {
+      this.listenTo(Todos, 'add change', function(todo) {
         var view = new TodoView({model: todo});
-        this.$('#todo-list').append(view.render().el);
+        if(todo.get('complete')){
+          this.$('#todo-list').append(view.render().el);
+        } else {
+          this.$('#completed-list').append(view.render().el);
+        };
       });
       this.listenTo(Todos, 'all', this.render);
       Todos.fetch();
     },
+
     counterTemplate: _.template($('#counter-template').html()),
     render: function() {
-      // todo completed / incomplete list counter
+      // counts # of completed vs incomplete items
       var completed_num = Todos.completed().length;
       var incomplete_num = Todos.incomplete().length;
       this.counter.html(this.counterTemplate({
