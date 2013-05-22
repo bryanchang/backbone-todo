@@ -2,7 +2,7 @@ var Todos;
 
 $(document).ready(function(){
 
-  // model
+  // --------------------MODEL--------------------
   var Todo = Backbone.Model.extend({
     // attributes: title, createdAt, complete
     defaults: function() {
@@ -18,7 +18,7 @@ $(document).ready(function(){
     }
   });
 
-  // collection
+  // --------------------COLLECTION--------------------
   var TodoList = Backbone.Collection.extend({
     model: Todo,
 
@@ -37,9 +37,11 @@ $(document).ready(function(){
     }
   });
 
-
   Todos = new TodoList();
 
+  // --------------------VIEWS--------------------
+
+  // -------------Prepare TodoList-------------
   var TodoView = Backbone.View.extend({
     tagName: 'li',
     template: _.template($('#list-item-template').html()),
@@ -55,11 +57,13 @@ $(document).ready(function(){
     }
   });
 
+  // --------------------Add/Edit/Show TodoList--------------------
+
   var AppView = Backbone.View.extend({
     el: $('#todoapp'),
     events: {
       "click #button": function() {
-        // Todo.create({title => "foo"})
+        // add a todo list
         Todos.create({title: this.input.val()});
         this.input.val('');
       }
@@ -76,11 +80,12 @@ $(document).ready(function(){
     },
     counterTemplate: _.template($('#counter-template').html()),
     render: function() {
-      var completed = Todos.completed().length;
-      var incomplete = Todos.incomplete().length;
+      // todo completed / incomplete list counter
+      var completed_num = Todos.completed().length;
+      var incomplete_num = Todos.incomplete().length;
       this.counter.html(this.counterTemplate({
-        completed: completed,
-        incomplete: incomplete
+        completed: completed_num,
+        incomplete: incomplete_num
       }));
     }
   });
